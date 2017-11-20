@@ -4,9 +4,6 @@ class Contact < ApplicationRecord
     full_name = "#{first_name} #{last_name}"
   end 
   
-
-
-
   def as_json
     { 
       id: id,
