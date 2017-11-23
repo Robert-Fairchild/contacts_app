@@ -15,6 +15,32 @@ if input_option == "1"
   response = Unirest.get("#{base_url}/contacts")
   contacts = response.body
   pp contacts
+elsif input_option "1.1"
+  puts "Search by category:"
+  puts "[1] first_name"
+  puts "[2] middle_name"
+  puts "[3] last_name"
+  puts "[4] email"
+  puts "[5] phone_number"
+  puts "[6] bio"
+  input_sub_option = gets.chomp
+  if input_sub_option == 1
+    params = {}
+    print "Enter first_name"
+    params[:first_name] = gets.chomp
+  elsif input_sub_option == 2
+    print "Enter middle_name"
+    params[:middle_name] = gets.chomp
+  elsif input_sub_option == 3
+    print "Enter last_name"
+    params[:last_name] = gets.chomp
+  elsif input_sub_option == 4
+    print "Enter email"
+    params[:email] = gets.chomp
+  end
+  # start editing here!!!
+
+
 elsif input_option == "2"
   params = {}
   print "New contact first name: "

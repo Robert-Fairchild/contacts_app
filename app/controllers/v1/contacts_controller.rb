@@ -1,6 +1,9 @@
 class V1::ContactsController < ApplicationController
   def index
     contacts = Contact.all
+    if params[:search]
+      contacts = contacts.where("first_name ILIKE ?", "%#{params[:search]}%")
+    end
     render json: contacts.as_json
   end
 
