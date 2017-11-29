@@ -1,9 +1,6 @@
 class V1::ContactsController < ApplicationController
   def index
-    contacts = Contact.all
-    if params[:search]
-      contacts = contacts.where("first_name ILIKE ?", "%#{params[:search]}%")
-    end
+    contacts = current_user.contacts
     render json: contacts.as_json
   end
 
@@ -14,16 +11,15 @@ class V1::ContactsController < ApplicationController
       last_name: params[:last_name],
       email: params[:email],
       phone_number: params[:phone_number],
-      bio: params[:bio]
+      bio: params[:bio],
+      user_id: current_user.id
     )
-    if 
-    contact.save
+    if contact.save
       render json: contact.as_json
     else
-      render json: {errors: contact.errors.full_messages}, status: bad_request
+      render json: {errors: contact.errors.full_messages}, status: :bad_request
     end
   end
-
 
   def show
     contact = Contact.find_by(id: params[:id])
@@ -38,13 +34,12 @@ class V1::ContactsController < ApplicationController
     contact.email = params[:email] || contact.email
     contact.phone_number = params[:phone_number] || contact.phone_number
     contact.bio = params[:bio] || contact.bio
-    if  contact.save
+    if contact.save
       render json: contact.as_json
-    else 
-      render json: {errors: contact.errors.full_messages}, status: bad_request
+    else
+      render json: {errors: contact.errors.full_messages}, status: :bad_request
     end
   end
-
 
   def destroy
     contact = Contact.find_by(id: params[:id])

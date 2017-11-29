@@ -1,21 +1,28 @@
 require "unirest"
 require "pp"
 
-base_url = "http://localhost:3000/v1"
+while true
+  system "clear"
+  base_url = "http://localhost:3000/v1"
 
-puts "Choose an option:"
-puts "[1] Show all contacts"
-puts "[2] Create a contact"
-puts "[3] Show a contact"
-puts "[4] Update a contact"
-puts "[5] Destroy a contact"
+  puts "Choose an option:"
+  puts "[1] Show all contacts"
+  puts "[1.1] Search contact by category"
+  puts "[2] Create a contact"
+  puts "[3] Show a contact"
+  puts "[4] Update a contact"
+  puts "[5] Destroy a contact"
+  puts "[6] Create Account"
+  puts "[7] Login"
+  puts "[8] Logout"
+  puts "[q] Quit App"
 
-input_option = gets.chomp
-if input_option == "1"
-  response = Unirest.get("#{base_url}/contacts")
-  contacts = response.body
-  pp contacts
-elsif input_option "1.1"
+  input_option = gets.chomp
+  if input_option == "1"
+    response = Unirest.get("#{base_url}/contacts")
+    contacts = response.body
+    pp contacts
+elsif input_option == "1.1"
   puts "Search by category:"
   puts "[1] first_name"
   puts "[2] middle_name"
@@ -91,4 +98,55 @@ elsif input_option == "5"
   contact_id = gets.chomp
   response = Unirest.delete("#{base_url}/contacts/#{contact_id}")
   pp response.body
+elsif input_option == "6"
+  print "Enter name: "
+  input_name = gets.chomp
+  print "Enter email: "
+  input_email = gets.chomp
+  print "Enter password: "
+  input_password = gets.chomp
+  print "Confirm password: "
+  input_password_confirmation = gets.chomp
+  response = Unirest.post(
+      "#{base_url}/users",
+      parameters: {
+        name: input_name,
+        email: input_email,
+        password: input_password,
+        password_confirmation: input_password_confirmation
+      }
+    )
+  pp response.body
+  elsif input_option == "7"
+    print "Enter email: "
+    input_email = gets.chomp
+    print "Enter password: "
+    input_password = gets.chomp
+
+    response = Unirest.post(
+      "http://localhost:3000/user_token",
+      parameters: {
+        auth: {
+          email: input_email,
+          password: input_password
+        }
+      }
+    )
+    # Save the JSON web token from the response
+    jwt = response.body["jwt"]
+    # Include the jwt in the headers of any future web requests
+    Unirest.default_header("Authorization", "Bearer #{jwt}")
+    pp response.body
+  elsif input_option == "8"
+    jwt = ""
+    Unirest.clear_default_headers()
+    puts "Logged out successfully!"
+ elsif input_option == "q"
+   puts "Goodbye!"
+   break
+  end
+  puts "Press enter to continue"
+  gets.chomp
 end
+   
+
